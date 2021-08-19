@@ -9,8 +9,4 @@ use App\Models\User;
 class Task extends Model
 {
     use HasFactory;
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }
