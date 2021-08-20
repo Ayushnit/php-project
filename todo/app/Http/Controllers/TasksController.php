@@ -6,14 +6,19 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Task;
+use Illuminate\Support\Facades\Validator;
 
 class TasksController extends Controller
 {
     public function CreateTask(Request $request)
     {
-        $request->validate([
+        $rules=array(
             'description' => 'required|min:5|max:50'
-        ]);
+        );
+        $validator=Validator::make($request->all(),$rules);
+        if($validator->fails()) {
+            return $validator->errors();
+        }
         $task = new Task();
         $task->description = $request->description;
         $task->status="Pending";
@@ -36,7 +41,6 @@ class TasksController extends Controller
         return response()->json([
             'message'=>"Task deleted successfully",
         ]);
-
     }
     public function GetAllTasks():JsonResponse
     {
@@ -54,7 +58,7 @@ class TasksController extends Controller
         }
         $UpdatedTask=DB::table('tasks')->where('id',$id)->update(['status'=>$request->status]);
         return response()->json([
-            'task'=>$UpdatedTask,
+            'task'=>'task status updated',
         ]);
     }
 }
